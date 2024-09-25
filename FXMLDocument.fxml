@@ -14,7 +14,7 @@
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="flowerstore.FXMLDocumentController">
    <children>
-      <AnchorPane fx:id="login_form" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #F4C2C2;">
+      <AnchorPane fx:id="login_form" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #F4C2C2;" visible="false">
          <children>
             <AnchorPane layoutY="14.0" prefHeight="440.0" prefWidth="248.0">
                <children>
@@ -27,7 +27,7 @@
             <AnchorPane layoutX="326.0" layoutY="14.0" prefHeight="440.0" prefWidth="325.0">
                <children>
                   <FontAwesomeIcon glyphName="USER" layoutX="137.0" layoutY="70.0" size="65" />
-                  <Label layoutX="117.0" layoutY="88.0" text="Sign In" textFill="#910853">
+                  <Label layoutX="117.0" layoutY="88.0" text="Login" textFill="#910853">
                      <font>
                         <Font name="Arial Bold Italic" size="30.0" />
                      </font>
@@ -43,17 +43,16 @@
                </children></AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="sign_up_form" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #F4C2C2;" visible="false">
+      <AnchorPane fx:id="sign_up_form" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #F4C2C2;">
          <children>
             <AnchorPane layoutX="10.0" layoutY="14.0" prefHeight="440.0" prefWidth="248.0" />
-            <ImageView fitHeight="425.0" fitWidth="321.0" layoutX="41.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="440.0" fitWidth="260.0" layoutX="41.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="38.0">
                <image>
                   <Image url="@WhatsApp%20Image%202024-09-20%20at%204.17.42%20PM.jpeg" />
                </image>
             </ImageView>
             <AnchorPane layoutX="291.0" layoutY="14.0" prefHeight="440.0" prefWidth="433.0">
                <children>
-                  <FontAwesomeIcon glyphName="USER" layoutX="220.0" layoutY="81.0" size="6em" text="" />
                   <Label layoutX="192.0" layoutY="103.0" text="Sign Up" textFill="#910853">
                      <font>
                         <Font name="Arial Bold Italic" size="30.0" />
@@ -68,6 +67,7 @@
                   </Button>
                   <PasswordField fx:id="passwordup" layoutX="129.0" layoutY="279.0" prefHeight="36.0" prefWidth="239.0" promptText="Password" />
                   <Hyperlink fx:id="have_account" layoutX="183.0" layoutY="393.0" onAction="#switchForm" text="Aleardy have account?!" />
+                  <FontAwesomeIcon glyphName="USER_PLUS" layoutX="207.0" layoutY="86.0" size="6em" />
                </children>
             </AnchorPane>
          </children>

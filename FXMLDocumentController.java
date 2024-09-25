@@ -170,16 +170,32 @@ public class FXMLDocumentController implements Initializable {
 
              else {
 
+                   //اخفاء 
+                signupbtn.getScene().getWindow().hide();
+                
                 prepare.execute();
                 alert = new Alert(AlertType.INFORMATION);
                 alert.setTitle("Information Message");
                 alert.setHeaderText(null);
                 alert.setContentText("Successfully create a new account!");
                 alert.showAndWait();
-
+                
+          
+               
+                
+                //تفريغ الحقول
                 emailup.setText("");
                 usernameup.setText("");
                 passwordup.setText("");
+                
+                    
+
+                    Parent root = FXMLLoader.load(getClass().getResource("dashbord.fxml"));
+                    Stage stage = new Stage();
+                    Scene scene = new Scene(root);
+                    
+                    stage.setScene(scene);
+                    stage.show();
             }
 
         } catch (Exception e) {
@@ -187,15 +203,16 @@ public class FXMLDocumentController implements Initializable {
 
         }
  }
- public void switchForm(ActionEvent ev) {
-        if (ev.getSource() == Create_account) {
-            login_form.setVisible(  false);
-            sign_up_form.setVisible(true);
-        } else if (ev.getSource() == have_account) {
-            login_form.setVisible(true);
-            sign_up_form.setVisible(false);
-        }
+public void switchForm(javafx.event.ActionEvent ev) {
+    if (ev.getSource() == Create_account) {
+        login_form.setVisible(false);
+        sign_up_form.setVisible(true);
+    } else if (ev.getSource() == have_account) {
+        login_form.setVisible(true);
+        sign_up_form.setVisible(false);
     }
+}
+
         
     
 
