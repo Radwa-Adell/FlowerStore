@@ -4,6 +4,8 @@
  */
 package flowerstore;
 
+import flowerstore.database;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +24,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.layout.StackPane;
 
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -32,82 +36,170 @@ import javafx.stage.StageStyle;
  */
 public class FXMLDocumentController implements Initializable {
     
-    @FXML
-     private Button loginbtn;
+   @FXML
+    public Hyperlink Create_account;
 
     @FXML
-    private AnchorPane main_frame;
+    private TextField emailup;
+
+    @FXML
+    public Hyperlink have_account;
+
+    @FXML
+    private AnchorPane login_form;
+
+    @FXML
+    private Button loginbtn;
 
     @FXML
     private PasswordField password;
 
     @FXML
+    private PasswordField passwordup;
+
+    @FXML
+    private AnchorPane sign_up_form;
+
+    @FXML
+    private Button signupbtn;
+
+    @FXML
     private TextField username;
+
+    @FXML
+    private TextField usernameup;
+
     
     // Database tools
     private Connection connect;
     private PreparedStatement prepare;
     private ResultSet result;
- 
-    public void login() throws SQLException, IOException {
-        String sql = "SELECT * FROM admin WHERE username=? AND password=?";
-        connect = database.con(); // Assuming database connection is correct
-       
+ public void login() throws SQLException {
+    
+    String sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
+    connect = database.con();
+    
+    if (connect == null) {
+        // If the connection fails, alert the user
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error Message");
+        alert.setHeaderText(null);
+        alert.setContentText("Failed to connect to the database.");
+        alert.showAndWait();
+        return; // Exit the method
+    }
+    
+    try {
+        prepare= connect.prepareStatement(sql);
+        prepare.setString(1, username.getText());
+        prepare.setString(2, password.getText());
+        result = prepare.executeQuery();
+        Alert alert;
+        if (username.getText().isEmpty() || password.getText().isEmpty()) {
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please fill all blank fields");
+            alert.showAndWait();
+        } else {
+            if (result.next()) {
+                
+                //to hide login form 
+                loginbtn.getScene().getWindow().hide();
+                
+                
+               // getData.username=username.getText();
+                alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Information Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Successfully Logged in!");
+                alert.showAndWait();
+                
+                                
+                //to hide login form 
+                loginbtn.getScene().getWindow().hide();
+                
+                  // LINK YOUR DASHBOARD FORM
+                    Parent root = FXMLLoader.load(getClass().getResource("dashbord.fxml"));
+                    Stage stage = new Stage();
+                    Scene scene = new Scene(root);
+                    
+                    stage.setScene(scene);
+                    stage.show();
+         
+            } else {
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Wrong  username or password ");
+                alert.showAndWait();
+            }
+        }
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+  }
+ public void signup() {
+        String sql = "insert into admin (username,email,password) values (?,?,?)";
+        connect = database.con();
+    
+    if (connect == null) {
+        // If the connection fails, alert the user
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error Message");
+        alert.setHeaderText(null);
+        alert.setContentText("Failed to connect to the database.");
+        alert.showAndWait();
+        return; // Exit the method
+    }
 
         try {
-            prepare = connect.prepareStatement(sql); 
-            prepare.setString(1, username.getText());
-            prepare.setString(2, password.getText());
-            result = prepare.executeQuery();
-            
+            prepare = connect.prepareStatement(sql);
+             prepare.setString(1, usernameup.getText());
+            prepare.setString(2, emailup.getText());
+            prepare.setString(3, passwordup.getText());
+
             Alert alert;
-            
-      if(username.getText().isEmpty() || password.getText().isEmpty()){
+            if (emailup.getText().isEmpty() || passwordup.getText().isEmpty() || usernameup.getText().isEmpty()) {
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Message");
                 alert.setHeaderText(null);
                 alert.setContentText("Please fill all blank fields");
                 alert.showAndWait();
-            }else{
-                if(result.next()){
-                    // IF CORRECT USERNAME AND PASSWORD THEN PROCEED TO DASHBOARD 
-                    
-                    alert = new Alert(AlertType.INFORMATION);
-                    alert.setTitle("Information Message");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Successfully Login!");
-                    alert.showAndWait();
-                    
-                   // getData.username = username.getText();
-                    
-                    // TO HIDE LOGIN FORM
-                   // loginBtn.getScene().getWindow().hide();
-                    
-                    // LINK YOUR DASHBOARD FORM
-                   
-          Parent root = FXMLLoader.load(getClass().getResource("dashboard.fxml"));
-          Stage stage = new Stage();
-          Scene scene = new Scene(root);
-          stage.setScene(scene);
-          stage.show();
+            } 
 
-                }else{
-                    // IF NOT THEN ERROR MESSAGE WILL APPEAR
-       
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Error Message");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Wrong Username/Password");
-                    alert.showAndWait();
-                    
-                }
+             else {
+
+                prepare.execute();
+                alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Information Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Successfully create a new account!");
+                alert.showAndWait();
+
+                emailup.setText("");
+                usernameup.setText("");
+                passwordup.setText("");
             }
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-           
+
+        } catch (Exception e) {
+            System.out.println(e);
+
+        }
+ }
+ public void switchForm(ActionEvent ev) {
+        if (ev.getSource() == Create_account) {
+            login_form.setVisible(  false);
+            sign_up_form.setVisible(true);
+        } else if (ev.getSource() == have_account) {
+            login_form.setVisible(true);
+            sign_up_form.setVisible(false);
         }
     }
+        
+    
+
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
