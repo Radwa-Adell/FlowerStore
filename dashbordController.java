@@ -29,6 +29,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -136,7 +137,7 @@ public class dashbordController implements Initializable {
 
 
     @FXML
-    private ComboBox<?> purchase_flowename;
+    private ComboBox<?> purchase_flowername;
 
     @FXML
     private ComboBox<?> purchase_flowerid;
@@ -145,7 +146,10 @@ public class dashbordController implements Initializable {
     private AnchorPane purchase_form;
 
     @FXML
-    private Spinner<?> purchase_quantity;
+    private Spinner<Integer> purchase_quantity;
+    
+       @FXML
+    private Button purchase_addcart;
 
     @FXML
     private Label purchase_total;
@@ -170,6 +174,69 @@ public class dashbordController implements Initializable {
     private ResultSet result;
 
     private Image image;
+    
+    
+    public void homeAvailableFlowers(){
+        
+        String sql = "SELECT COUNT(id) FROM flowers WHERE status = 'Available'";
+        
+        connect = database.con();
+        
+        try{
+            int countAF = 0;
+            statement = connect.createStatement();
+            result = statement.executeQuery(sql);
+            
+            if(result.next()){
+                countAF = result.getInt("COUNT(id)");
+            }
+            home_availableflowers.setText(String.valueOf(countAF));
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
+    
+    public void homeTotalIncome(){
+        
+        String sql = "SELECT SUM(total) FROM customer_info";
+        
+        connect = database.con();
+        
+        try{
+            double countTI = 0;
+            statement = connect.createStatement();
+            result = statement.executeQuery(sql);
+            
+            if(result.next()){
+                countTI = result.getInt("SUM(total)");
+            }
+            
+            home_totalincome.setText("$" + String.valueOf(countTI));
+            
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
+       
+    public void homeTotalCustomer(){
+        
+        String sql = "SELECT COUNT(id) FROM customer_info";
+        
+        connect = database.con();
+        
+        try{
+            int countTC = 0;
+            
+            statement = connect.createStatement();
+            result = statement.executeQuery(sql);
+            
+            if(result.next()){
+                countTC = result.getInt("COUNT(id)");
+            }
+            home_totalcustomers.setText(String.valueOf(countTC));
+            
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
+    
 
     public void availableFlowersAdd() {
         String sql = "INSERT INTO flowers (flower_id, name, status, price, image, date) "
@@ -359,7 +426,7 @@ public class dashbordController implements Initializable {
         }
     }
     
-      public void availableFlowersClear() {
+    public void availableFlowersClear() {
 
         availableflowers_flowerid.setText("");
         availableflowers_flowername.setText("");
@@ -371,45 +438,42 @@ public class dashbordController implements Initializable {
 
     }
       
-      public void availableFlowersSearch()
-      {
-          FilteredList<FlowersData> filter =new FilteredList<>(availableFlowersList, e -> true);
-          
-        availableflowers_search.textProperty().addListener((Observable, oldValue, newValue) -> {
+    public void availableFlowersSearch() {
+    FilteredList<FlowersData> filter = new FilteredList<>(availableFlowersList, e -> true);
+    
+    availableflowers_search.textProperty().addListener((observable, oldValue, newValue) -> {
 
-            filter.setPredicate(PrediateFlowerData -> {
+        filter.setPredicate(flowerData -> {
 
-                if (newValue.isEmpty() || newValue == null) {
-                    return true;
-                }
+            if (newValue == null || newValue.isEmpty()) {
+                return true; // Display all items if the search text is empty
+            }
 
-                String searchKey = newValue.toLowerCase();
+            String searchKey = newValue.toLowerCase();
 
-                if (PrediateFlowerData.getFlowerId().toString().contains(searchKey)) {
-                    return true;
-                } else if (PrediateFlowerData.getName().toString().toLowerCase().contains(searchKey)) {
-                    return true;
-                } else if (PrediateFlowerData.getStatus().toLowerCase().contains(searchKey)) {
-                    return true;
-                } else if (PrediateFlowerData.getPrice().toString().contains(searchKey)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            });
-
+            if (flowerData.getFlowerId().toString().contains(searchKey)) {
+                return true;
+            } else if (flowerData.getName() != null && flowerData.getName().toLowerCase().contains(searchKey)) {
+                return true;
+            } else if (flowerData.getStatus() != null && flowerData.getStatus().toLowerCase().contains(searchKey)) {
+                return true;
+            } else if (flowerData.getPrice() != null && flowerData.getPrice().toString().contains(searchKey)) {
+                return true;
+            } else {
+                return false;
+            }
         });
+    });
 
-        SortedList<FlowersData> sortList = new SortedList<>(filter);
+    SortedList<FlowersData> sortList = new SortedList<>(filter);
 
-        sortList.comparatorProperty().bind(availableflowers_tableview.comparatorProperty());
+    sortList.comparatorProperty().bind(availableflowers_tableview.comparatorProperty());
 
-        availableflowers_tableview.setItems(sortList);
-          
-      }
-      
-          String listStatus[] = {"Available", "Not Available"};
+    availableflowers_tableview.setItems(sortList);
+}
 
+     
+     String listStatus[] = {"Available", "Not Available"};
     public void availableFlowersStatus() {
 
         List<String> listS = new ArrayList<>();
@@ -425,22 +489,21 @@ public class dashbordController implements Initializable {
 
     public void availableFlowersInsertImage() {
 
-        FileChooser open = new FileChooser();
-        open.setTitle("Open Image File");
-        open.getExtensionFilters().add(new ExtensionFilter("Image File", "*jpg", "*png"));
+      FileChooser open = new FileChooser();
+      open.setTitle("Open Image File");
+      open.getExtensionFilters().add(new ExtensionFilter("File Image", "*.jpg", "*.png", ".jfif"));
 
-        File file = open.showOpenDialog(main_form.getScene().getWindow());
+      File file = open.showOpenDialog(main_form.getScene().getWindow());
 
-        if (file != null) {
+      if(file != null){
+          getData.path = file.getAbsolutePath();
 
-            getData.path = file.getAbsolutePath();
-
-            image = new Image(file.toURI().toString(), 128, 142, false, true);
-            availableflowers_imageview.setImage(image);
-
+          image = new Image(file.toURI().toString(), 123, 142, false, true);
+         availableflowers_imageview.setImage(image);
+      }
+   
         }
 
-    }
 
     public ObservableList<FlowersData> availableFlowersListData() {
         ObservableList<FlowersData> listData = FXCollections.observableArrayList();
@@ -498,6 +561,191 @@ public class dashbordController implements Initializable {
         image = new Image(uri, 128, 142, false, true);
         availableflowers_imageview.setImage(image);
     }
+    
+    public void purchaseAddToCart()
+    {
+         purchaseCustomerId();
+
+        String sql = "INSERT INTO customer (customer_id, flower_id, name, quantity, price, date) "
+                + "VALUES(?,?,?,?,?,?)";
+
+        connect = database.con();
+
+        try {
+            Alert alert;
+
+            if (purchase_flowerid.getSelectionModel().getSelectedItem() == null
+                    || purchase_flowername.getSelectionModel().getSelectedItem() == null
+                    || qty == 0) {
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please choose the product first");
+                alert.showAndWait();
+            } else {
+                double priceData = 0;
+                double totalPrice;
+                String checkPrice = "SELECT name, price FROM flowers WHERE name = '"
+                        + purchase_flowername.getSelectionModel().getSelectedItem() + "'";
+
+                statement = connect.createStatement();
+                result = statement.executeQuery(checkPrice);
+
+                if (result.next()) {
+                    priceData = result.getDouble("price");
+                }
+
+                prepare = connect.prepareStatement(sql);
+                prepare.setString(1, String.valueOf(customerId));
+                prepare.setInt(2, (Integer) purchase_flowerid.getSelectionModel().getSelectedItem());
+                prepare.setString(3, (String) purchase_flowername.getSelectionModel().getSelectedItem());
+                prepare.setString(4, String.valueOf(qty));
+                
+                totalPrice = (priceData * qty);
+
+                prepare.setString(5, String.valueOf(totalPrice));
+
+                Date date = new Date();
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+                prepare.setString(6, String.valueOf(sqlDate));
+                
+                prepare.executeUpdate();
+                
+                purchaseShowListData();
+                purchaseDisplayTotal();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void purchasePay(){
+        
+        String sql = "INSERT INTO customer_info (customer_id, total, date) VALUES(?,?,?)";
+        
+        connect = database.con();
+        
+        try{
+            Alert alert;
+            
+            if(totalP == 0){
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Something wrong :3");
+                alert.showAndWait();
+            }else{
+                alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Are you sure?");
+                Optional<ButtonType> option = alert.showAndWait();
+                
+                if(option.get().equals(ButtonType.OK)){
+                    prepare = connect.prepareStatement(sql);
+                    prepare.setString(1, String.valueOf(customerId));
+                    prepare.setString(2, String.valueOf(totalP));
+
+                    Date date = new Date();
+                    java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+                    prepare.setString(3, String.valueOf(sqlDate));
+
+                    prepare.executeUpdate();
+                    
+                    alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Information Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Successful !! Thanks for purchase.");
+                    alert.showAndWait();
+                    
+                    totalP = 0;
+                }
+            }
+            
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
+       private double totalP = 0;
+    public void purchaseDisplayTotal(){
+        purchaseCustomerId();
+        String sql = "SELECT SUM(price) FROM customer WHERE customer_id = '"+customerId+"'";
+        
+        connect = database.con();
+        
+        try{
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+            
+            if(result.next()){
+                totalP = result.getDouble("SUM(price)");
+            }
+            
+            purchase_total.setText("$" + String.valueOf(totalP));
+            
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
+    public void purchaseFlowerId()
+    {
+            String sql = "SELECT status, flower_id FROM flowers WHERE status = 'Available'";
+
+        connect = database.con();
+
+        try {
+            ObservableList listData = FXCollections.observableArrayList();
+
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            while (result.next()) {
+                listData.add(result.getInt("flower_id"));
+            }
+            purchase_flowerid.setItems(listData);
+
+            purchaseFlowerName();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void purchaseFlowerName()
+    {
+             String sql = "SELECT flower_id, name FROM flowers WHERE flower_id = '"
+                + purchase_flowerid.getSelectionModel().getSelectedItem() + "'";
+
+        connect = database.con();
+
+        try {
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+
+            ObservableList listData = FXCollections.observableArrayList();
+
+            while (result.next()) {
+                listData.add(result.getString("name"));
+            }
+           purchase_flowername.setItems(listData);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+       private SpinnerValueFactory<Integer> spinner;
+    public void purchaseSpinner() {
+        spinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 0);
+        purchase_quantity.setValueFactory(spinner);
+    }
+
+    private int qty;
+    public void purchaseQuantity() {
+        qty = purchase_quantity.getValue();
+    }
+    
     
      public ObservableList<customerData> purchaseListData() {
         purchaseCustomerId();
@@ -597,10 +845,11 @@ public class dashbordController implements Initializable {
             home_btn.setStyle("-fx-background-color:#F4C2C2");
             availableflowersbtn.setStyle("-fx-background-color: transparent");
             purchasebtn.setStyle("-fx-background-color: transparent");
-            /*homeAF();
-            homeTI();
-            homeTC();
-            homeChart();*/
+            
+            
+          homeAvailableFlowers();
+         homeTotalIncome();
+        homeTotalCustomer();
 
         } else if (event.getSource() == availableflowersbtn) {
             home_form.setVisible(false);
@@ -626,10 +875,10 @@ public class dashbordController implements Initializable {
             home_btn.setStyle("-fx-background-color: transparent");
 
              purchaseShowListData();
-           /* purchaseFlowerId();
+            purchaseFlowerId();
             purchaseFlowerName();
             purchaseSpinner();
-            purchaseDisplayTotal();*/
+            purchaseDisplayTotal();
         }
 
     }
@@ -694,10 +943,19 @@ public class dashbordController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         displayUsername();
+        
+       homeAvailableFlowers();
+         homeTotalIncome();
+        homeTotalCustomer();
+       
         availableFlowersShowListData();
         availableFlowersStatus();
         
         purchaseShowListData();
+        purchaseFlowerId();
+        purchaseFlowerName();
+        purchaseSpinner();
+        purchaseDisplayTotal();
     }
 
 }

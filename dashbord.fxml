@@ -46,7 +46,7 @@
                   <AnchorPane prefHeight="563.0" prefWidth="199.0" styleClass="nav-form" stylesheets="@dashbordstyle.css" BorderPane.alignment="CENTER">
                      <children>
                         <FontAwesomeIcon glyphName="USER" layoutX="71.0" layoutY="76.0" size="6em" />
-                        <Label layoutX="62.0" layoutY="93.0" text="Welcome to " textFill="#333333">
+                        <Label layoutX="62.0" layoutY="93.0" text="Welcome , " textFill="#333333">
                            <font>
                               <Font name="Tahoma" size="15.0" />
                            </font>
@@ -89,7 +89,7 @@
                <center>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <children>
-                        <AnchorPane fx:id="home_form" layoutX="196.0" layoutY="164.0" prefHeight="562.4" prefWidth="904.8" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="home_form" layoutX="196.0" layoutY="164.0" prefHeight="562.4" prefWidth="904.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="7.0" layoutY="8.0" prefHeight="160.0" prefWidth="890.0" stylesheets="@dashbordstyle.css">
                                  <styleClass>
@@ -221,13 +221,12 @@
                               </AnchorPane>
                               <AnchorPane layoutX="256.0" layoutY="10.0" prefHeight="542.0" prefWidth="635.0" stylesheets="@dashbordstyle.css">
                                  <children>
-                                    <TextField fx:id="availableflowers_search" layoutX="25.0" layoutY="14.0" onKeyTyped="#availableFlowersSearch" prefHeight="34.0" prefWidth="306.0" promptText="      Search" style="-fx-background-color: #fff; -fx-background-radius: 4px; -fx-font-family: Tahoma; -fx-border-color: #F4C2C2;" stylesheets="@dashbordstyle.css">
+                                    <TextField fx:id="availableflowers_search" layoutX="25.0" layoutY="14.0" onMouseClicked="#availableFlowersSearch" prefHeight="34.0" prefWidth="306.0" promptText="Search" style="-fx-background-color: #fff; -fx-background-radius: 4px; -fx-font-family: Tahoma; -fx-border-color: #F4C2C2;" stylesheets="@dashbordstyle.css">
                                        <styleClass>
                                           <String fx:value="shadow" />
                                           <String fx:value="white-bg" />
                                        </styleClass>
                                     </TextField>
-                                    <FontAwesomeIcon glyphName="SEARCH" layoutX="31.0" layoutY="37.0" size="1.5em" />
                                     <TableView fx:id="availableflowers_tableview" layoutX="14.0" layoutY="63.0" onMouseClicked="#availableFlowersSelect" prefHeight="470.0" prefWidth="614.0" style="-fx-border-color: #F4C2C2;" stylesheets="@Style.css" AnchorPane.bottomAnchor="2.0">
                                       <columns>
                                         <TableColumn fx:id="availableflowers_col_flowerid" prefWidth="122.39996337890625" text="Flower ID" />
@@ -250,7 +249,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="purchase_form" layoutX="290.0" layoutY="127.0" prefHeight="562.4" prefWidth="904.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="purchase_form" layoutX="290.0" layoutY="127.0" prefHeight="562.4" prefWidth="904.8" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="15.0" layoutY="8.0" prefHeight="544.0" prefWidth="874.0" stylesheets="@dashbordstyle.css">
                                  <styleClass>
@@ -258,7 +257,7 @@
                                     <String fx:value="shadow" />
                                  </styleClass>
                                  <children>
-                                    <AnchorPane layoutX="2.0" layoutY="1.0" prefHeight="238.0" prefWidth="872.0" stylesheets="@dashbordstyle.css">
+                                    <AnchorPane layoutX="2.0" layoutY="1.0" onMouseClicked="#purchaseQuantity" prefHeight="238.0" prefWidth="872.0" stylesheets="@dashbordstyle.css">
                                        <styleClass>
                                           <String fx:value="white-bg" />
                                           <String fx:value="shadow" />
@@ -269,19 +268,18 @@
                                                 <Font name="Tahoma" size="14.0" />
                                              </font>
                                           </Label>
-                                          <ComboBox fx:id="purchase_flowerid" layoutX="122.0" layoutY="29.0" prefHeight="26.0" prefWidth="186.0" promptText="Choose..." styleClass="textfield" stylesheets="@dashbordstyle.css" />
+                                          <ComboBox fx:id="purchase_flowerid" layoutX="122.0" layoutY="29.0" onAction="#purchaseFlowerId" prefHeight="26.0" prefWidth="186.0" promptText="Choose..." styleClass="textfield" stylesheets="@dashbordstyle.css" />
                                           <Label layoutX="25.0" layoutY="79.0" prefHeight="18.0" prefWidth="92.0" text="Flower Name:">
                                              <font>
                                                 <Font name="Tahoma" size="14.0" />
                                              </font>
                                           </Label>
-                                          <ComboBox fx:id="purchase_flowename" layoutX="122.0" layoutY="75.0" prefHeight="26.0" prefWidth="186.0" promptText="Choose..." styleClass="textfield" stylesheets="@dashbordstyle.css" />
+                                          <ComboBox fx:id="purchase_flowername" layoutX="122.0" layoutY="75.0" onAction="#purchaseFlowerName" prefHeight="26.0" prefWidth="186.0" promptText="Choose..." styleClass="textfield" stylesheets="@dashbordstyle.css" />
                                           <Label layoutX="33.0" layoutY="128.0" prefHeight="18.0" prefWidth="75.0" text="Quantity:">
                                              <font>
                                                 <Font name="Tahoma" size="14.0" />
                                              </font>
                                           </Label>
-                                          <Spinner fx:id="purchase_quantity" layoutX="120.0" layoutY="124.0" prefHeight="26.0" prefWidth="189.0" styleClass="textfield" stylesheets="@dashbordstyle.css" />
                                           <Label layoutX="502.0" layoutY="80.0" prefHeight="19.0" prefWidth="41.0" text="Total:">
                                              <font>
                                                 <Font size="17.0" />
@@ -292,15 +290,25 @@
                                                 <Font size="18.0" />
                                              </font>
                                           </Label>
-                                          <Button fx:id="paynowbtn" layoutX="500.0" layoutY="162.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="246.0" stylesheets="@dashbordstyle.css" text="Pay Now">
+                                          <Button fx:id="paynowbtn" layoutX="500.0" layoutY="162.0" mnemonicParsing="false" onAction="#purchasePay" prefHeight="43.0" prefWidth="246.0" stylesheets="@dashbordstyle.css" text="Pay Now">
                                              <styleClass>
                                                 <String fx:value="shadow" />
                                                 <String fx:value="nav-form" />
                                              </styleClass>
                                              <font>
-                                                <Font name="Tahoma" size="15.0" />
+                                                <Font name="Tahoma" size="18.0" />
                                              </font>
                                           </Button>
+                                          <Button fx:id="purchase_addcart" layoutX="114.0" layoutY="175.0" mnemonicParsing="false" onAction="#purchaseAddToCart" prefHeight="39.0" prefWidth="202.0" stylesheets="@dashbordstyle.css" text="Add to Cart">
+                                             <font>
+                                                <Font name="Tahoma" size="17.0" />
+                                             </font>
+                                             <styleClass>
+                                                <String fx:value="shadow" />
+                                                <String fx:value="nav-form" />
+                                             </styleClass>
+                                          </Button>
+                                          <Spinner fx:id="purchase_quantity" layoutX="120.0" layoutY="124.0" onMouseClicked="#purchaseQuantity" prefHeight="26.0" prefWidth="189.0" styleClass="textfield" stylesheets="@dashbordstyle.css" />
                                        </children>
                                     </AnchorPane>
                                     <TableView fx:id="purchase_tableview" layoutX="10.0" layoutY="256.0" prefHeight="280.0" prefWidth="855.0" stylesheets="@dashbordstyle.css">

@@ -174,12 +174,12 @@ public class FXMLDocumentController implements Initializable {
                 alert.setContentText("Successfully created a new account!");
                 alert.showAndWait();
 
-                // تفريغ الحقول
+                
                 emailup.setText("");
                 usernameup.setText("");
                 passwordup.setText("");
 
-                Parent root = FXMLLoader.load(getClass().getResource("dashbord.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
                 Stage stage = new Stage();
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
